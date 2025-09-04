@@ -96,9 +96,24 @@ jobs:
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
         run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
-            - name: Setup Node.js environment
-  uses: actions/setup-node@v5.0.0
-  with:
+        name: Example Workflow for Environment Files
+
+on: push
+
+jobs:
+  set_and_use_env_vars:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set environment variable
+        run: echo "MY_ENV_VAR=myValue" >> $GITHUB_ENV
+
+      - name: Use environment variable
+        run: |
+          echo "The value of MY_ENV_VAR is $MY_ENV_VAR"
+
+
+
+            
     # Set always-auth in npmrc.
     always-auth: # optional, default is false
     # Version Spec of the version to use. Examples: 12.x, 10.15.1, >=10.15.0.
