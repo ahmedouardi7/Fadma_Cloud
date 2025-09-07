@@ -15,32 +15,43 @@
 # limitations under the License.
 #
 
-ARG ENABLE_PROXY=false
-ARG ETCD_VERSION=v3.5.4
-
-# Build Apache APISIX
-FROM apache/apisix:latest
-
-
-ARG ETCD_VERSION
-LABEL etcd_version="${ETCD_VERSION}"
-
-WORKDIR /tmp
-
-USER root
-
-RUN wget https://github.com/etcd-io/etcd/releases/download/${ETCD_VERSION}/etcd-${ETCD_VERSION}-linux-amd64.tar.gz \
-    && tar -zxvf etcd-${ETCD_VERSION}-linux-amd64.tar.gz \
-    && mv etcd-${ETCD_VERSION}-linux-amd64/* /usr/bin/ \
-    && rm /usr/local/openresty/bin/etcdctl
+cat << EOF > $(pwd)/config.yaml
+deployment:
+  role: traditional
+  role_traditional:
+    config_provider: etcd
+  admin:
+    allow_admin:
+      - 0.0.0.0/0  # Please set it to the subnet address you obtained.
+                  # If not set, by default all IP access is allowed.
+  etcd:
+    host:
+      - "http://etcd:2379"
+    prefix: "/apisix"
+    timeout: 30
+EOF
 
 
-WORKDIR /usr/local/apisix
 
-ENV PATH=$PATH:/usr/local/openresty/luajit/bin:/usr/local/openresty/nginx/sbin:/usr/local/openresty/bin
 
-EXPOSE 9180 9080 9443 2379 2380
+docker exec -i apache-apisix sh -c 'cat > /usr/local/apisix/conf/apisix.yaml <<_EOC_
+routes:
+  -
+    id: httpbin
+    uri: /*
+    upstream:
+      nodes:
+        "httpbin.org": 1
+      type: roundrobin
+    plugin_config_id: 1
 
-CMD ["sh", "-c", "(nohup etcd >/tmp/etcd.log 2>&1 &) && sleep 10 && /usr/bin/apisix init && /usr/bin/apisix init_etcd && /usr/local/openresty/bin/openresty -p /usr/local/apisix -g 'daemon off;'"]
+plugin_configs:
+  -
+    id: 1
+    plugins:
+      response-rewrite:
+        body: "Hello APISIX\n"
+    desc: "response-rewrite"
+#END
+_EOC_'
 
-STOPSIGNAL SIGQUIT
