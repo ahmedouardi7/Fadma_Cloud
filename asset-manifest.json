@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.css": "/AOIS_apisix-Project/static/css/main.7a57d241.css",
-    "main.js": "/AOIS_apisix-Project/static/js/main.3dc561cc.js",
-    "index.html": "/AOIS_apisix-Project/index.html",
-    "main.7a57d241.css.map": "/AOIS_apisix-Project/static/css/main.7a57d241.css.map",
-    "main.3dc561cc.js.map": "/AOIS_apisix-Project/static/js/main.3dc561cc.js.map"
+    "main.css": "/Fadma-Cloud/static/css/main.7a57d241.css",
+    "main.js": "/Fadma-Cloud/static/js/main.3dc561cc.js",
+    "index.html": "/Fadma-Cloud/index.html",
+    "main.7a57d241.css.map": "/Fadma-Cloud/static/css/main.7a57d241.css.map",
+    "main.3dc561cc.js.map": "/Fadma-Cloud/static/js/main.3dc561cc.js.map"
   },
   "entrypoints": [
     "static/css/main.7a57d241.css",
