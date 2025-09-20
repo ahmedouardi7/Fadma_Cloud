@@ -1,16 +1,24 @@
 name: CI for docker image built from local source code
 
 on:
-  schedule:
-    - cron: "0 1 * * *"
   push:
+    branches:
+    - main
+    - release/*
+  schedule:
+  
+  - cron: "0 2 * * 1-5"
+    
+
     branches: [master]
     paths-ignore:
       - 'docs/**'
       - '**/*.md'
+
   pull_request:
     branches:
-      - master
+    - main
+  
       - 'release/apisix-2.15.**'
 
 env:
@@ -23,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-      fail-fast: false
+      fail-fast: fals 
       matrix:
         platform:
           - debian
